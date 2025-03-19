@@ -1,4 +1,4 @@
-# Healthcare-Bot: HealthFirst
+# HealthFirst: AI-Powered Healthcare Chatbot
 
 ## Description
 HealthFirst is an AI-driven healthcare chatbot designed to provide users with basic medical recommendations using advanced natural language processing. This project is part of my learning journey to master LangChain and LangGraph, integrating key concepts to create an intelligent virtual assistant for health-related queries.
