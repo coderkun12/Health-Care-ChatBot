@@ -17,16 +17,16 @@ import re
 # ----- Flask setup -----
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
 CORS(app, supports_credentials=True)
-app.secret_key = os.urandom(24)  # Add secret key for session management
+app.secret_key = os.urandom(24)
 
 # ----- MongoDB Setup -----
-client = MongoClient('mongodb://localhost:27017/')
-db = client['HealthFirst']
+client = MongoClient('LOCAL_HOST_ADDRESS')
+db = client['YOUR_DATABASE_NAME']
 chat_collection = db['Chats']
-users_collection = db['Users']  # New collection for users
+users_collection = db['Users']
 
 # ----- LangGraph initialization -----
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = "YOUR_GROQ_API_KEY"
 
 model = init_chat_model("llama3-8b-8192", model_provider="groq")
 prompt_template = ChatPromptTemplate.from_messages([
@@ -220,22 +220,18 @@ def signup():
     email = data['email']
     password = data['password']
     
-    # Basic email validation
     email_pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     if not re.match(email_pattern, email):
         return jsonify({"error": "Invalid email format"}), 400
     
-    # Password validation (at least 8 characters)
     if len(password) < 8:
         return jsonify({"error": "Password must be at least 8 characters long"}), 400
     
     try:
-        # Check if email already exists
         existing_user = users_collection.find_one({"email": email})
         if existing_user:
             return jsonify({"error": "Email already registered"}), 409
         
-        # Hash the password for security
         hashed_password = generate_password_hash(password)
         
         # Insert new user
@@ -245,7 +241,6 @@ def signup():
             "created_at": datetime.utcnow()
         })
         
-        # Set user email in session after successful signup
         session['user_email'] = email
         
         return jsonify({"message": "User registered successfully"}), 201
